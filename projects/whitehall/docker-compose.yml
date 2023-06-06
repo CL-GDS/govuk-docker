@@ -4,7 +4,9 @@ volumes:
   whitehall-tmp:
   whitehall-node-modules:
 
-x-whitehall: &whitehall
+
+x-whitehall:
+  &whitehall
   build:
     context: .
     dockerfile: projects/whitehall/Dockerfile
@@ -34,7 +36,8 @@ services:
       TEST_DATABASE_URL: "mysql2://root:root@mysql-8/whitehall_test"
       REDIS_URL: redis://redis
 
-  whitehall-app: &whitehall-app
+  whitehall-app:
+    &whitehall-app
     <<: *whitehall
     depends_on:
       - mysql-8
@@ -53,6 +56,26 @@ services:
     expose:
       - "3000"
     command: bin/rails s --restart
+
+  whitehall-dbg:
+    &whitehall-dbg
+    <<: *whitehall
+    depends_on:
+      - mysql-8
+      - redis
+      - static-app
+      - nginx-proxy
+      - asset-manager-app
+      - publishing-api-app
+    environment:
+      GOVUK_PROXY_STATIC_ENABLED: "true"
+      DATABASE_URL: "mysql2://root:root@mysql-8/whitehall_development"
+      REDIS_URL: redis://redis
+      VIRTUAL_HOST: whitehall-admin.dev.gov.uk, whitehall-frontend.dev.gov.uk
+      BINDING: 0.0.0.0
+    expose:
+      - "3000"
+    command: bundle exec rdbg -n -O -- bin/rails server --restart
 
   whitehall-worker:
     <<: *whitehall

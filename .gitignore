@@ -2,3 +2,9 @@ replication
 stderr.log
 .version
 Brewfile.lock.json
+.DS_Store
+.idea/govuk-docker.iml
+.idea/misc.xml
+.idea/modules.xml
+.idea/vcs.xml
+.idea/workspace.xml

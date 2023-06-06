@@ -13,8 +13,10 @@ volumes:
   elasticsearch-6:
   elasticsearch-7:
 
+
 networks:
   default:
+
 
 services:
   postgres-12:
@@ -30,6 +32,8 @@ services:
       POSTGRES_HOST_AUTH_METHOD: trust
     volumes:
       - postgres-13:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
 
   postgres-14:
     image: postgres:14
@@ -67,6 +71,9 @@ services:
     command: --max_allowed_packet=1073741824
     environment:
       MYSQL_ROOT_PASSWORD: root
+    ports:
+      - 33006:3306
+      - 33060:33060
 
   redis:
     image: redis
